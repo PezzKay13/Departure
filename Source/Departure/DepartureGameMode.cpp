@@ -3,6 +3,7 @@
 #include "DepartureGameMode.h"
 #include "DepartureCharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Blueprint/UserWidget.h"
 
 ADepartureGameMode::ADepartureGameMode()
 {
@@ -11,5 +12,21 @@ ADepartureGameMode::ADepartureGameMode()
 	if (PlayerPawnBPClass.Class != NULL)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
+	}
+}
+
+void ADepartureGameMode::BeginPlay() {
+	Super::BeginPlay();
+
+	//Initialize the HUD when game starts
+	if (HUDWidgetClass != nullptr) {
+
+		CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), HUDWidgetClass);
+
+
+		if (CurrentWidget != nullptr) {
+
+			CurrentWidget->AddToViewport();
+		}
 	}
 }
