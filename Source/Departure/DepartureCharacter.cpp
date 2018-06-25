@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Classes/Components/SphereComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ADepartureCharacter
@@ -43,6 +44,21 @@ ADepartureCharacter::ADepartureCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	//Create the collection sphere
+	CollectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollectionSphere"));
+	CollectionSphere->SetupAttachment(RootComponent);
+	CollectionSphere->SetSphereRadius(114.929367f);
+
+	//Set the dependences of speed on stamina
+	InitialStamina = 100.0f;
+	InitialHealth = 100.0f;
+	CharacterHealth = InitialHealth;
+	CharacterStamina = InitialStamina;
+	SpeedFactor = 2.0f;
+	BaseSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	IsSprinting = false;
+	PrimaryActorTick.bCanEverTick = true;
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
@@ -74,6 +90,10 @@ void ADepartureCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 
 	// VR headset functionality
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ADepartureCharacter::OnResetVR);
+
+	//Custom Input created using C++ code
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ADepartureCharacter::CharacterSprint);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ADepartureCharacter::StopCharacterSprint);
 }
 
 
@@ -130,5 +150,67 @@ void ADepartureCharacter::MoveRight(float Value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
+	}
+}
+
+void ADepartureCharacter::Tick(float DeltaTime) {
+	Super::Tick(DeltaTime);
+
+	if (IsSprinting) {
+		if (GetCurrentStamina() <= 0) {
+			StopCharacterSprint();
+		}
+		else {
+			UpdateStamina(-0.5f);
+		}
+	}
+	if (GetCurrentStamina() < 100 && !IsSprinting) {
+		UpdateStamina(0.25f);
+	}
+}
+
+void ADepartureCharacter::CharacterSprint() {
+	GetCharacterMovement()->MaxWalkSpeed *= SpeedFactor;
+	IsSprinting = true;
+}
+
+void ADepartureCharacter::StopCharacterSprint() {
+	GetCharacterMovement()->MaxWalkSpeed = BaseSpeed;
+	IsSprinting = false;
+}
+
+float ADepartureCharacter::GetInitialStamina() {
+	return InitialStamina;
+}
+
+float ADepartureCharacter::GetCurrentStamina() {
+	return CharacterStamina;
+}
+
+void ADepartureCharacter::UpdateStamina(float StaminaUpdate) {
+	CharacterStamina = GetCurrentStamina() + StaminaUpdate;
+	if (GetCurrentStamina() > 100) {
+		CharacterStamina = 100;
+	}
+	if (GetCurrentStamina() < 0) {
+		CharacterStamina = 0;
+	}
+}
+
+float ADepartureCharacter::GetInitialHealth() {
+	return InitialHealth;
+}
+
+float ADepartureCharacter::GetCurrentHealth() {
+	return CharacterHealth;
+}
+
+void ADepartureCharacter::UpdateHealth(float HealthUpdate) {
+	CharacterHealth = GetCurrentHealth() + HealthUpdate;
+	if (GetCurrentHealth() > 100) {
+		CharacterHealth = 100;
+	}
+	if (GetCurrentHealth() < 0) {
+		CharacterHealth = 0;
 	}
 }
