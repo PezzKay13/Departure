@@ -18,6 +18,9 @@ class ADepartureCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		class USphereComponent* CollectionSphere;
 public:
 	ADepartureCharacter();
 
@@ -28,6 +31,33 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
+
+	/**Accessor function for initial stamina power*/
+	UFUNCTION(BlueprintPure, Category = "Stats")
+		float GetInitialStamina();
+
+	/**Accessor function for current stamina power*/
+	UFUNCTION(BlueprintPure, Category = "Stats")
+		float GetCurrentStamina();
+
+	/**Function to update the character's stamina*/
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+		void UpdateStamina(float StaminaUpdate);
+
+	/**Accessor function for initial health level*/
+	UFUNCTION(BlueprintPure, Category = "Stats")
+		float GetInitialHealth();
+
+	/**Accessor function for current health level*/
+	UFUNCTION(BlueprintPure, Category = "Stats")
+		float GetCurrentHealth();
+
+	/**Function to update the character's health*/
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+		void UpdateHealth(float HealthUpdate);
+
+	//Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 
@@ -58,6 +88,44 @@ protected:
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
+	//Whether or not the character is sprinting
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		bool IsSprinting;
+
+	//Called when we press a key to have the character sprint
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+		void StopCharacterSprint();
+
+	//Called when we press a key to have the character sprint
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+		void CharacterSprint();
+
+	//The increase of speed when sprinting
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		float SpeedFactor;
+
+	//The original speed variable when not sprinting
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		float BaseSpeed;
+
+	//The initial stamina level of our character
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		float InitialStamina;
+
+	//The initial health level of our character
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		float InitialHealth;
+
+	private:
+
+		//Current stamina level of our character
+		UPROPERTY(VisibleAnywhere, Category = "Stats")
+			float CharacterStamina;
+
+		//Current health level of our character
+		UPROPERTY(VisibleAnywhere, Category = "Stats")
+			float CharacterHealth;
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -68,5 +136,7 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	/** Returns CollectionSphere subobject **/
+	FORCEINLINE class USphereComponent* GetCollectionSphere() const { return CollectionSphere; }
 };
 
