@@ -58,6 +58,7 @@ ADepartureCharacter::ADepartureCharacter()
 	BaseSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	IsSprinting = false;
 	PrimaryActorTick.bCanEverTick = true;
+	CanHeal = true;
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
@@ -166,6 +167,9 @@ void ADepartureCharacter::Tick(float DeltaTime) {
 	}
 	if (GetCurrentStamina() < 100 && !IsSprinting) {
 		UpdateStamina(0.25f);
+	}
+	if (GetCurrentHealth() < 100 && CanHeal) {
+		UpdateHealth(0.22f);
 	}
 }
 
