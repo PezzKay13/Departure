@@ -14,6 +14,7 @@ Saved
 *.xcworkspace
 
 Content/StarterContent/*
+<<<<<<< HEAD
 Content/InfinityBladeFireLands/*
 Content/InfinityBladeGrassLands/*
 Content/ParagonProps/*
@@ -21,3 +22,11 @@ Content/SampleMap/*
 Content/AnimStarterPack/*
 Content/KiteDemo/*
 Content/Lighting/*
+=======
+Content/SoulCity/*
+Content/InfinityBladeGrassLands/*
+Content/ParagonProps/*
+Content/KiteDemo/*
+Content/SampleMap/*
+Content/SampleMap/ParagonSample_Daylight_BuiltData.uasset
+>>>>>>> 63f9d6476afc2633406d183367b8683806cf98ca
