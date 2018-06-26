@@ -116,6 +116,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 		float InitialHealth;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		bool CanHeal;
+
 	private:
 
 		//Current stamina level of our character

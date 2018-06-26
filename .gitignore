@@ -14,9 +14,10 @@ Saved
 *.xcworkspace
 
 Content/StarterContent/*
-Content/SoulCity/*
+Content/InfinityBladeFireLands/*
 Content/InfinityBladeGrassLands/*
 Content/ParagonProps/*
-Content/KiteDemo/*
 Content/SampleMap/*
-Content/SampleMap/ParagonSample_Daylight_BuiltData.uasset
+Content/AnimStarterPack/*
+Content/KiteDemo/*
+Content/Lighting/*
