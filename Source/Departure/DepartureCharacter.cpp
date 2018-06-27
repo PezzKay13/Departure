@@ -169,7 +169,7 @@ void ADepartureCharacter::Tick(float DeltaTime) {
 		UpdateStamina(0.25f);
 	}
 	if (GetCurrentHealth() < 100 && CanHeal) {
-		UpdateHealth(0.22f);
+		UpdateHealth(0.1f);
 	}
 }
 
